@@ -1,0 +1,13 @@
+# This repo publishes only the migration_diagnostic module.
+# Track it and the repo docs; ignore anything else at the root.
+/*
+!/.gitignore
+!/README.rst
+!/LICENSE
+!/migration_diagnostic
+
+# Python / OS noise inside the module
+__pycache__/
+*.py[cod]
+.DS_Store
+*.swp

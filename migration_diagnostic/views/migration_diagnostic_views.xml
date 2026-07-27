@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         VUES STANDALONE — tag racine <tree> obligatoire pour ir.ui.view.type
+         Les decoration-* sont validés dans le contexte du bon modèle ici
+    ════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_migration_risk_list_embedded" model="ir.ui.view">
+        <field name="name">migration.diagnostic.risk.list.embedded</field>
+        <field name="model">migration.diagnostic.risk</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="risk_level == 'low'"
+                  decoration-warning="risk_level == 'medium'"
+                  decoration-danger="risk_level == 'high'">
+                <field name="risk_level" widget="badge"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="recommendation"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_migration_volume_list_embedded" model="ir.ui.view">
+        <field name="name">migration.diagnostic.volume.list.embedded</field>
+        <field name="model">migration.diagnostic.volume</field>
+        <field name="arch" type="xml">
+            <tree decoration-warning="volume_level == 'high'"
+                  decoration-danger="volume_level == 'critical'">
+                <field name="phase"/>
+                <field name="migration_priority" string="Ordre"/>
+                <field name="label"/>
+                <field name="model_name"/>
+                <field name="record_count" sum="Total"/>
+                <field name="volume_level" widget="badge"/>
+                <field name="available" widget="boolean"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_migration_module_list_embedded" model="ir.ui.view">
+        <field name="name">migration.diagnostic.module.list.embedded</field>
+        <field name="model">migration.diagnostic.module</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="category == 'custom'"
+                  decoration-warning="category == 'oca'">
+                <field name="category" widget="badge"/>
+                <field name="name"/>
+                <field name="shortdesc"/>
+                <field name="author"/>
+                <field name="installed_version"/>
+                <field name="risk_level" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         DIAGNOSTIC — Form view
+    ════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_migration_diagnostic_form" model="ir.ui.view">
+        <field name="name">migration.diagnostic.form</field>
+        <field name="model">migration.diagnostic</field>
+        <field name="arch" type="xml">
+            <form string="Diagnostic de migration">
+                <header>
+                    <button name="action_run_scan" type="object"
+                            string="🔍 Relancer le scan"
+                            class="btn-primary"
+                            invisible="state == 'scanning'"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Réinitialiser"
+                            invisible="state == 'draft'"/>
+                    <button name="action_open_report" type="object"
+                            string="📄 Exporter PDF"
+                            invisible="state != 'done'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,scanning,done"/>
+                </header>
+
+                <sheet>
+                    <div class="alert alert-danger" role="alert" invisible="state != 'error'">
+                        <b>Erreur lors du scan :</b>
+                        <field name="error_message" readonly="1"/>
+                    </div>
+
+                    <div invisible="state != 'done'" style="margin-bottom:16px;">
+                        <field name="complexity_level" widget="badge"
+                               decoration-success="complexity_level == 'low'"
+                               decoration-warning="complexity_level == 'medium'"
+                               decoration-danger="complexity_level in ('high', 'critical')"/>
+                        <span class="ms-3 fs-5 fw-bold">
+                            Score : <field name="complexity_score" readonly="1"/> / 100
+                        </span>
+                        <span class="ms-4 text-muted">
+                            Estimation : <field name="estimated_days_label" readonly="1"/>
+                        </span>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du diagnostic"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Informations">
+                            <field name="source_version"/>
+                            <field name="scan_date"/>
+                            <field name="scan_duration" string="Durée (s)"/>
+                            <field name="company_count"/>
+                            <field name="has_multicompany" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Personnalisations">
+                            <field name="custom_field_count"/>
+                            <field name="server_action_python_count"/>
+                            <field name="automation_rule_count"/>
+                        </group>
+                    </group>
+
+                    <group string="Inventaire des modules">
+                        <group>
+                            <field name="module_count_total"/>
+                            <field name="module_count_standard"/>
+                        </group>
+                        <group>
+                            <field name="module_count_oca"/>
+                            <field name="module_count_custom"/>
+                        </group>
+                    </group>
+
+                    <group string="Données">
+                        <field name="total_records" string="Total enregistrements estimés"/>
+                    </group>
+
+                    <notebook>
+                        <page string="📋 Recommandations" invisible="state != 'done'">
+                            <field name="recommendation" widget="html" nolabel="1" readonly="1"/>
+                            <separator string="Phase 1 — Socle référentiel"/>
+                            <field name="phase1_notes" widget="html" nolabel="1" readonly="1"/>
+                            <separator string="Phase 2 — Données métier"/>
+                            <field name="phase2_notes" widget="html" nolabel="1" readonly="1"/>
+                        </page>
+
+                        <page string="⚠️ Facteurs de risque">
+                            <field name="risk_line_ids" readonly="1"
+                                   context="{'tree_view_ref': 'migration_diagnostic.view_migration_risk_list_embedded'}"/>
+                        </page>
+
+                        <page string="📊 Volumes de données">
+                            <field name="volume_line_ids" readonly="1"
+                                   context="{'tree_view_ref': 'migration_diagnostic.view_migration_volume_list_embedded'}"/>
+                        </page>
+
+                        <page string="📦 Modules installés">
+                            <field name="module_line_ids" readonly="1"
+                                   context="{'tree_view_ref': 'migration_diagnostic.view_migration_module_list_embedded'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         DIAGNOSTIC — List view
+    ════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_migration_diagnostic_list" model="ir.ui.view">
+        <field name="name">migration.diagnostic.list</field>
+        <field name="model">migration.diagnostic</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="complexity_level == 'low'"
+                  decoration-warning="complexity_level == 'medium'"
+                  decoration-danger="complexity_level in ('high', 'critical')">
+                <field name="name"/>
+                <field name="source_version"/>
+                <field name="scan_date"/>
+                <field name="complexity_level" widget="badge"/>
+                <field name="complexity_score"/>
+                <field name="estimated_days_label" string="Estimation"/>
+                <field name="module_count_total"/>
+                <field name="module_count_custom"/>
+                <field name="total_records"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ACTION principale
+    ════════════════════════════════════════════════════════════════════════ -->
+    <record id="action_migration_diagnostic" model="ir.actions.act_window">
+        <field name="name">Diagnostics de migration</field>
+        <field name="res_model">migration.diagnostic</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Lancer votre premier diagnostic</p>
+            <p>Scannez votre base Odoo pour obtenir un rapport de faisabilité de migration.</p>
+        </field>
+    </record>
+
+</odoo>
