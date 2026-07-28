@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_migration_scan_wizard_form" model="ir.ui.view">
+        <field name="name">migration.scan.wizard.form</field>
+        <field name="model">migration.scan.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Run the migration diagnostic">
+                <group>
+                    <field name="name"/>
+                </group>
+                <group string="Options">
+                    <field name="include_messages"/>
+                    <field name="include_attachments"/>
+                </group>
+                <field name="info" widget="html" readonly="1"/>
+                <footer>
+                    <button name="action_launch_scan" type="object"
+                            string="🚀 Run the scan" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

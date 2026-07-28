@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_migration_diagnostic_user,migration.diagnostic user,model_migration_diagnostic,base.group_user,1,1,1,1
+access_migration_diagnostic_module_user,migration.diagnostic.module user,model_migration_diagnostic_module,base.group_user,1,1,1,1
+access_migration_diagnostic_volume_user,migration.diagnostic.volume user,model_migration_diagnostic_volume,base.group_user,1,1,1,1
+access_migration_diagnostic_risk_user,migration.diagnostic.risk user,model_migration_diagnostic_risk,base.group_user,1,1,1,1
+access_migration_scan_wizard_user,migration.scan.wizard user,model_migration_scan_wizard,base.group_user,1,1,1,1
