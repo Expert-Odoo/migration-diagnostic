@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_migration_diagnostic_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <div class="page">
+
+                    <!-- ENTÊTE -->
+                    <div style="border-bottom: 3px solid #875A7B; padding-bottom: 12px; margin-bottom: 20px;">
+                        <h1 style="color: #875A7B; margin:0;">Rapport de diagnostic de migration Odoo</h1>
+                        <p style="color: #666; margin:4px 0 0 0;">
+                            <t t-esc="o.name"/> —
+                            Généré le <t t-esc="o.scan_date and o.scan_date.strftime('%d/%m/%Y à %H:%M') or 'N/A'"/>
+                        </p>
+                    </div>
+
+                    <!-- BANDEAU SCORE -->
+                    <t t-if="o.complexity_level == 'low'">
+                        <t t-set="bg_color">background: #28a745</t>
+                        <t t-set="level_label">FAIBLE ✅</t>
+                    </t>
+                    <t t-elif="o.complexity_level == 'medium'">
+                        <t t-set="bg_color">background: #e6a817</t>
+                        <t t-set="level_label">MOYEN ⚠️</t>
+                    </t>
+                    <t t-elif="o.complexity_level == 'high'">
+                        <t t-set="bg_color">background: #dc3545</t>
+                        <t t-set="level_label">ÉLEVÉ 🔴</t>
+                    </t>
+                    <t t-else="">
+                        <t t-set="bg_color">background: #6f0000</t>
+                        <t t-set="level_label">CRITIQUE 🚨</t>
+                    </t>
+
+                    <div t-attf-style="#{bg_color}; color: white; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td>
+                                    <div style="font-size: 22px; font-weight: bold;">
+                                        Complexité : <t t-esc="level_label"/>
+                                    </div>
+                                    <div style="font-size: 13px; margin-top: 4px;">
+                                        Score global : <t t-esc="o.complexity_score"/> / 100
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div style="font-size: 18px; font-weight: bold;">
+                                        Estimation : <t t-esc="o.estimated_days_label"/>
+                                    </div>
+                                    <div style="font-size: 12px; margin-top: 4px;">
+                                        Version source : <t t-esc="o.source_version or 'N/A'"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- KPIs 4 cases -->
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 8px; margin-bottom: 16px;">
+                        <tr>
+                            <td style="width:25%; border: 1px solid #ddd; padding: 12px; background: #f8f9fa; border-radius: 6px; vertical-align:top;">
+                                <div style="font-size: 26px; font-weight: bold; color: #875A7B;"><t t-esc="o.module_count_total"/></div>
+                                <div style="color: #666; font-size: 12px;">Modules installés</div>
+                                <div style="font-size: 11px; margin-top: 4px;">
+                                    Std : <t t-esc="o.module_count_standard"/> |
+                                    OCA : <t t-esc="o.module_count_oca"/> |
+                                    Custom : <b><t t-esc="o.module_count_custom"/></b>
+                                </div>
+                            </td>
+                            <td style="width:25%; border: 1px solid #ddd; padding: 12px; background: #f8f9fa; border-radius: 6px; vertical-align:top;">
+                                <div style="font-size: 26px; font-weight: bold; color: #875A7B;"><t t-esc="o.total_records"/></div>
+                                <div style="color: #666; font-size: 12px;">Enregistrements estimés</div>
+                            </td>
+                            <td style="width:25%; border: 1px solid #ddd; padding: 12px; background: #f8f9fa; border-radius: 6px; vertical-align:top;">
+                                <div style="font-size: 26px; font-weight: bold; color: #875A7B;"><t t-esc="o.company_count"/></div>
+                                <div style="color: #666; font-size: 12px;">Société(s)</div>
+                                <div style="font-size: 11px; margin-top: 4px;">
+                                    <t t-if="o.has_multicompany">⚠️ Multi-société</t>
+                                    <t t-else="">✅ Mono-société</t>
+                                </div>
+                            </td>
+                            <td style="width:25%; border: 1px solid #ddd; padding: 12px; background: #f8f9fa; border-radius: 6px; vertical-align:top;">
+                                <div style="font-size: 26px; font-weight: bold; color: #875A7B;"><t t-esc="o.custom_field_count"/></div>
+                                <div style="color: #666; font-size: 12px;">Champs personnalisés</div>
+                                <div style="font-size: 11px; margin-top: 4px;">Actions Python : <t t-esc="o.server_action_python_count"/></div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- RECOMMANDATION -->
+                    <div style="background: #f0f0f0; border-left: 4px solid #875A7B; padding: 12px; margin-bottom: 20px; border-radius: 0 4px 4px 0;">
+                        <h3 style="margin: 0 0 8px 0; color: #875A7B;">Synthèse</h3>
+                        <div><t t-out="o.recommendation"/></div>
+                    </div>
+
+                    <!-- FACTEURS DE RISQUE -->
+                    <h2 style="color: #875A7B; border-bottom: 1px solid #ddd; padding-bottom: 6px; font-size: 15px;">
+                        Facteurs de risque détectés (<t t-esc="len(o.risk_line_ids)"/>)
+                    </h2>
+                    <t t-if="o.risk_line_ids">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
+                            <thead>
+                                <tr style="background: #875A7B; color: white;">
+                                    <th style="padding: 7px; text-align: left; width: 10%;">Niveau</th>
+                                    <th style="padding: 7px; text-align: left; width: 30%;">Facteur</th>
+                                    <th style="padding: 7px; text-align: left; width: 60%;">Recommandation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.risk_line_ids" t-as="risk">
+                                    <t t-if="risk.risk_level == 'high'"><t t-set="row_bg">#fff5f5</t></t>
+                                    <t t-elif="risk.risk_level == 'medium'"><t t-set="row_bg">#fffbeb</t></t>
+                                    <t t-else=""><t t-set="row_bg">#f0fff4</t></t>
+                                    <tr t-attf-style="background: #{row_bg}; border-bottom: 1px solid #eee;">
+                                        <td style="padding: 6px 7px; font-weight: bold;">
+                                            <t t-if="risk.risk_level == 'high'">🔴 Élevé</t>
+                                            <t t-elif="risk.risk_level == 'medium'">⚠️ Moyen</t>
+                                            <t t-else="">✅ Faible</t>
+                                        </td>
+                                        <td style="padding: 6px 7px;">
+                                            <b><t t-esc="risk.name"/></b>
+                                            <div style="color: #666; font-size: 9px; margin-top: 2px;"><t t-esc="risk.description"/></div>
+                                        </td>
+                                        <td style="padding: 6px 7px;"><t t-esc="risk.recommendation"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <p style="color: #28a745; margin-bottom: 20px;">✅ Aucun facteur de risque majeur détecté.</p>
+                    </t>
+
+                    <!-- VOLUMES -->
+                    <h2 style="color: #875A7B; border-bottom: 1px solid #ddd; padding-bottom: 6px; font-size: 15px;">
+                        Volumétrie par modèle
+                    </h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background: #875A7B; color: white;">
+                                <th style="padding: 6px 7px; text-align: left;">Phase</th>
+                                <th style="padding: 6px 7px; text-align: center;">Ordre</th>
+                                <th style="padding: 6px 7px; text-align: left;">Modèle</th>
+                                <th style="padding: 6px 7px; text-align: right;">Enreg.</th>
+                                <th style="padding: 6px 7px; text-align: left;">Niveau</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.volume_line_ids" t-as="vol">
+                                <t t-if="vol.volume_level == 'critical'"><t t-set="vol_bg">#fff5f5</t></t>
+                                <t t-elif="vol.volume_level == 'high'"><t t-set="vol_bg">#fffbeb</t></t>
+                                <t t-else=""><t t-set="vol_bg">#fff</t></t>
+                                <tr t-attf-style="background: #{vol_bg}; border-bottom: 1px solid #eee;">
+                                    <td style="padding: 5px 7px;">Ph. <t t-esc="vol.phase"/></td>
+                                    <td style="padding: 5px 7px; text-align:center;"><t t-esc="vol.migration_priority"/></td>
+                                    <td style="padding: 5px 7px;">
+                                        <b><t t-esc="vol.label"/></b>
+                                        <span style="color:#999; font-size:9px;"> (<t t-esc="vol.model_name"/>)</span>
+                                    </td>
+                                    <td style="padding: 5px 7px; text-align:right; font-weight:bold;"><t t-esc="vol.record_count"/></td>
+                                    <td style="padding: 5px 7px;">
+                                        <t t-if="vol.volume_level == 'critical'">🔴 Critique</t>
+                                        <t t-elif="vol.volume_level == 'high'">⚠️ Élevé</t>
+                                        <t t-elif="vol.volume_level == 'medium'">Moyen</t>
+                                        <t t-elif="vol.volume_level == 'low'">✅ Faible</t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- MODULES NON-STANDARD -->
+                    <t t-set="custom_mods" t-value="o.module_line_ids.filtered(lambda m: m.category != 'standard')"/>
+                    <t t-if="custom_mods">
+                        <h2 style="color: #875A7B; border-bottom: 1px solid #ddd; padding-bottom: 6px; font-size: 15px;">
+                            Modules OCA / Custom à évaluer (<t t-esc="len(custom_mods)"/>)
+                        </h2>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
+                            <thead>
+                                <tr style="background: #875A7B; color: white;">
+                                    <th style="padding: 6px 7px; text-align: left; width:10%;">Type</th>
+                                    <th style="padding: 6px 7px; text-align: left; width:25%;">Module</th>
+                                    <th style="padding: 6px 7px; text-align: left; width:40%;">Description</th>
+                                    <th style="padding: 6px 7px; text-align: left; width:15%;">Auteur</th>
+                                    <th style="padding: 6px 7px; text-align: left; width:10%;">Risque</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="custom_mods" t-as="mod">
+                                    <t t-if="mod.category == 'custom'"><t t-set="mod_bg">#fff5f5</t></t>
+                                    <t t-else=""><t t-set="mod_bg">#fffbeb</t></t>
+                                    <tr t-attf-style="background: #{mod_bg}; border-bottom: 1px solid #eee;">
+                                        <td style="padding: 5px 7px; font-weight:bold;">
+                                            <t t-if="mod.category == 'custom'">Custom</t>
+                                            <t t-else="">OCA</t>
+                                        </td>
+                                        <td style="padding: 5px 7px; font-family:monospace;"><t t-esc="mod.name"/></td>
+                                        <td style="padding: 5px 7px;"><t t-esc="mod.shortdesc"/></td>
+                                        <td style="padding: 5px 7px;"><t t-esc="mod.author"/></td>
+                                        <td style="padding: 5px 7px;">
+                                            <t t-if="mod.risk_level == 'high'">🔴</t>
+                                            <t t-elif="mod.risk_level == 'medium'">⚠️</t>
+                                            <t t-else="">✅</t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <!-- DÉMARCHE -->
+                    <div style="page-break-before: always;"/>
+                    <h2 style="color: #875A7B; border-bottom: 1px solid #ddd; padding-bottom: 6px; font-size: 15px;">
+                        Démarche de migration recommandée
+                    </h2>
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 8px; margin-bottom: 16px;">
+                        <tr>
+                            <td style="width:50%; background: #e8f4fd; border: 1px solid #b8d9f0; border-radius: 6px; padding: 12px; vertical-align:top;">
+                                <h3 style="color: #1a5f8a; margin: 0 0 8px 0; font-size: 13px;">Phase 1 — Socle référentiel</h3>
+                                <div style="font-size: 9px;"><t t-out="o.phase1_notes"/></div>
+                            </td>
+                            <td style="width:50%; background: #f0fff4; border: 1px solid #b2dfdb; border-radius: 6px; padding: 12px; vertical-align:top;">
+                                <h3 style="color: #1a6b3a; margin: 0 0 8px 0; font-size: 13px;">Phase 2 — Données métier</h3>
+                                <div style="font-size: 9px;"><t t-out="o.phase2_notes"/></div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- PIED DE PAGE -->
+                    <div style="border-top: 1px solid #ddd; margin-top: 24px; padding-top: 10px; color: #888; font-size: 9px; text-align: center;">
+                        Rapport généré par <b>Migration Diagnostic v15</b> — expodo.fr | Document confidentiel
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>
