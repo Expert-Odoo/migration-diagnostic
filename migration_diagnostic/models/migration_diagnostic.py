@@ -7,82 +7,82 @@ _logger = logging.getLogger(__name__)
 
 class MigrationDiagnostic(models.Model):
     _name = 'migration.diagnostic'
-    _description = 'Diagnostic de migration Odoo'
+    _description = 'Odoo Migration Diagnostic'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
 
     # ── Identité ──────────────────────────────────────────────────────────────
     name = fields.Char(
-        string='Référence',
+        string='Reference',
         required=True,
-        default=lambda self: _('Diagnostic du ') + fields.Datetime.now().strftime('%d/%m/%Y %H:%M'),
+        default=lambda self: _('Diagnostic of ') + fields.Datetime.now().strftime('%Y-%m-%d %H:%M'),
         tracking=True,
     )
     state = fields.Selection([
-        ('draft', 'Brouillon'),
-        ('scanning', 'Analyse en cours...'),
-        ('done', 'Terminé'),
-        ('error', 'Erreur'),
-    ], default='draft', string='État', tracking=True)
+        ('draft', 'Draft'),
+        ('scanning', 'Scanning...'),
+        ('done', 'Done'),
+        ('error', 'Error'),
+    ], default='draft', string='Status', tracking=True)
 
-    source_version = fields.Char(string='Version Odoo source', readonly=True)
-    scan_date = fields.Datetime(string='Date du scan', readonly=True)
-    scan_duration = fields.Float(string='Durée du scan (s)', readonly=True)
+    source_version = fields.Char(string='Source Odoo Version', readonly=True)
+    scan_date = fields.Datetime(string='Scan Date', readonly=True)
+    scan_duration = fields.Float(string='Scan Duration (s)', readonly=True)
 
     # ── Résultats ─────────────────────────────────────────────────────────────
     complexity_score = fields.Integer(
-        string='Score de complexité',
+        string='Complexity Score',
         readonly=True,
-        help='Score global de 0 à 100. Plus il est élevé, plus la migration est complexe.',
+        help='Overall score from 0 to 100. The higher it is, the more complex the migration.',
     )
     complexity_level = fields.Selection([
-        ('low',      'Faible ✅'),
-        ('medium',   'Moyen ⚠️'),
-        ('high',     'Élevé 🔴'),
-        ('critical', 'Critique 🚨'),
-    ], string='Niveau de complexité', readonly=True, tracking=True)
+        ('low',      'Low ✅'),
+        ('medium',   'Medium ⚠️'),
+        ('high',     'High 🔴'),
+        ('critical', 'Critical 🚨'),
+    ], string='Complexity Level', readonly=True, tracking=True)
     complexity_color = fields.Integer(compute='_compute_complexity_color')
 
-    estimated_days_min = fields.Integer(string='Charge estimée min (j)', readonly=True)
-    estimated_days_max = fields.Integer(string='Charge estimée max (j)', readonly=True)
-    estimated_days_label = fields.Char(compute='_compute_estimated_days_label', string='Estimation')
+    estimated_days_min = fields.Integer(string='Estimated effort min (d)', readonly=True)
+    estimated_days_max = fields.Integer(string='Estimated effort max (d)', readonly=True)
+    estimated_days_label = fields.Char(compute='_compute_estimated_days_label', string='Estimate')
 
     # ── Synthèse modules ──────────────────────────────────────────────────────
-    module_count_total = fields.Integer(string='Modules installés total', readonly=True)
-    module_count_standard = fields.Integer(string='Modules standard Odoo', readonly=True)
-    module_count_oca = fields.Integer(string='Modules OCA', readonly=True)
-    module_count_custom = fields.Integer(string='Modules custom / tiers', readonly=True)
+    module_count_total = fields.Integer(string='Total installed modules', readonly=True)
+    module_count_standard = fields.Integer(string='Odoo standard modules', readonly=True)
+    module_count_oca = fields.Integer(string='OCA modules', readonly=True)
+    module_count_custom = fields.Integer(string='Custom / third-party modules', readonly=True)
 
     # ── Synthèse données ──────────────────────────────────────────────────────
-    total_records = fields.Integer(string='Enregistrements estimés total', readonly=True)
-    has_multicompany = fields.Boolean(string='Multi-société', readonly=True)
-    company_count = fields.Integer(string='Nombre de sociétés', readonly=True)
-    custom_field_count = fields.Integer(string='Champs personnalisés (ir.model.fields)', readonly=True)
-    server_action_python_count = fields.Integer(string='Actions Python serveur', readonly=True)
-    automation_rule_count = fields.Integer(string='Règles d\'automatisation', readonly=True)
+    total_records = fields.Integer(string='Total estimated records', readonly=True)
+    has_multicompany = fields.Boolean(string='Multi-company', readonly=True)
+    company_count = fields.Integer(string='Number of companies', readonly=True)
+    custom_field_count = fields.Integer(string='Custom fields (ir.model.fields)', readonly=True)
+    server_action_python_count = fields.Integer(string='Python server actions', readonly=True)
+    automation_rule_count = fields.Integer(string='Automation rules', readonly=True)
 
     # ── Lignes détail ─────────────────────────────────────────────────────────
     module_line_ids = fields.One2many(
         'migration.diagnostic.module', 'diagnostic_id',
-        string='Modules analysés',
+        string='Analyzed modules',
     )
     volume_line_ids = fields.One2many(
         'migration.diagnostic.volume', 'diagnostic_id',
-        string='Volumes de données',
+        string='Data volumes',
     )
     risk_line_ids = fields.One2many(
         'migration.diagnostic.risk', 'diagnostic_id',
-        string='Facteurs de risque détectés',
+        string='Detected risk factors',
     )
 
     # ── Recommandations ───────────────────────────────────────────────────────
-    recommendation = fields.Html(string='Recommandations', readonly=True,
+    recommendation = fields.Html(string='Recommendations', readonly=True,
                                  sanitize=False, sanitize_attributes=False, sanitize_style=False)
-    phase1_notes = fields.Html(string='Notes Phase 1 — Socle référentiel', readonly=True,
+    phase1_notes = fields.Html(string='Phase 1 Notes — Reference Base', readonly=True,
                                sanitize=False, sanitize_attributes=False, sanitize_style=False)
-    phase2_notes = fields.Html(string='Notes Phase 2 — Données métier', readonly=True,
+    phase2_notes = fields.Html(string='Phase 2 Notes — Business Data', readonly=True,
                                sanitize=False, sanitize_attributes=False, sanitize_style=False)
-    error_message = fields.Text(string='Message d\'erreur', readonly=True)
+    error_message = fields.Text(string='Error Message', readonly=True)
 
     # ─────────────────────────────────────────────────────────────────────────
     # Computed
@@ -146,7 +146,7 @@ class MigrationDiagnostic(models.Model):
                 'scan_duration': round(time.time() - t0, 2),
             })
         except Exception as e:
-            _logger.exception('Erreur pendant le scan de migration')
+            _logger.exception('Error during migration scan')
             self.write({
                 'state': 'error',
                 'error_message': str(e),
@@ -164,7 +164,7 @@ class MigrationDiagnostic(models.Model):
             import odoo.release as r
             version = r.version
         except Exception:
-            version = 'Inconnue'
+            version = _('Unknown')
         self.source_version = version
 
     # Modules à exclure du scan (outils de migration/diagnostic eux-mêmes)
@@ -248,30 +248,30 @@ class MigrationDiagnostic(models.Model):
         """Mesure les volumes de données des modèles critiques."""
         MODELS_TO_SCAN = [
             # (model_name, label, phase, migration_priority)
-            ('res.partner',          'Partenaires / Contacts',    '2', 1),
-            ('res.users',            'Utilisateurs',              '1', 1),
-            ('account.move',         'Pièces comptables',         '2', 5),
-            ('account.move.line',    'Lignes comptables',         '2', 5),
-            ('account.account',      'Plan comptable',            '1', 2),
-            ('account.journal',      'Journaux',                  '1', 3),
-            ('account.tax',          'Taxes',                     '1', 4),
-            ('product.template',     'Fiches produit',            '2', 2),
-            ('product.product',      'Variantes produit',         '2', 2),
-            ('sale.order',           'Commandes client',          '2', 3),
-            ('sale.order.line',      'Lignes commandes client',   '2', 3),
-            ('purchase.order',       'Commandes fournisseur',     '2', 4),
-            ('purchase.order.line',  'Lignes cmds fournisseur',   '2', 4),
-            ('stock.picking',        'Transferts de stock',       '2', 6),
-            ('stock.move',           'Mouvements de stock',       '2', 6),
-            ('stock.warehouse',      'Entrepôts',                 '1', 5),
-            ('mrp.production',       'Ordres de fabrication',     '2', 7),
-            ('hr.employee',          'Employés',                  '2', 7),
-            ('crm.lead',             'Opportunités CRM',          '2', 7),
+            ('res.partner',          _('Partners / Contacts'),    '2', 1),
+            ('res.users',            _('Users'),                  '1', 1),
+            ('account.move',         _('Journal entries'),        '2', 5),
+            ('account.move.line',    _('Journal items'),          '2', 5),
+            ('account.account',      _('Chart of accounts'),      '1', 2),
+            ('account.journal',      _('Journals'),               '1', 3),
+            ('account.tax',          _('Taxes'),                  '1', 4),
+            ('product.template',     _('Product templates'),      '2', 2),
+            ('product.product',      _('Product variants'),       '2', 2),
+            ('sale.order',           _('Sales orders'),           '2', 3),
+            ('sale.order.line',      _('Sales order lines'),      '2', 3),
+            ('purchase.order',       _('Purchase orders'),        '2', 4),
+            ('purchase.order.line',  _('Purchase order lines'),   '2', 4),
+            ('stock.picking',        _('Stock transfers'),        '2', 6),
+            ('stock.move',           _('Stock moves'),            '2', 6),
+            ('stock.warehouse',      _('Warehouses'),             '1', 5),
+            ('mrp.production',       _('Manufacturing orders'),   '2', 7),
+            ('hr.employee',          _('Employees'),              '2', 7),
+            ('crm.lead',             _('CRM opportunities'),      '2', 7),
         ]
         if include_messages:
-            MODELS_TO_SCAN.append(('mail.message', 'Messages / Chatter', '2', 8))
+            MODELS_TO_SCAN.append(('mail.message', _('Messages / Chatter'), '2', 8))
         if include_attachments:
-            MODELS_TO_SCAN.append(('ir.attachment', 'Pièces jointes', '2', 9))
+            MODELS_TO_SCAN.append(('ir.attachment', _('Attachments'), '2', 9))
 
         lines = []
         total = 0
@@ -297,7 +297,7 @@ class MigrationDiagnostic(models.Model):
                     'available': available,
                 })
             except Exception as e:
-                _logger.warning('Impossible de compter %s : %s', model_name, e)
+                _logger.warning('Unable to count %s: %s', model_name, e)
 
         self.env['migration.diagnostic.volume'].create(lines)
         self.total_records = total
@@ -325,11 +325,11 @@ class MigrationDiagnostic(models.Model):
         if company_count > 1:
             risks.append(self._mk_risk(
                 'multi_company',
-                'Multi-société détectée',
-                f'{company_count} sociétés dans la base.',
+                _('Multi-company detected'),
+                _('%s companies in the database.') % company_count,
                 'high',
-                'Chaque société nécessite une vérification des journaux, taxes et comptes. '
-                'Les règles inter-sociétés peuvent nécessiter un reconfiguration manuelle.',
+                _('Each company requires a review of journals, taxes and accounts. '
+                  'Inter-company rules may require manual reconfiguration.'),
             ))
 
         # ── Champs custom ─────────────────────────────────────────────────────
@@ -343,14 +343,14 @@ class MigrationDiagnostic(models.Model):
             for f in custom_fields:
                 by_model.setdefault(f.model_id.model, []).append(f.name)
             top_models = sorted(by_model.items(), key=lambda x: -len(x[1]))[:5]
-            detail = ', '.join(f'{m}: {len(fs)} champs' for m, fs in top_models)
+            detail = ', '.join(_('%(model)s: %(count)s fields') % {'model': m, 'count': len(fs)} for m, fs in top_models)
             risks.append(self._mk_risk(
                 'custom_fields',
-                f'{len(custom_fields)} champs personnalisés détectés',
-                f'Modèles concernés : {detail}',
+                _('%s custom fields detected') % len(custom_fields),
+                _('Models involved: %s') % detail,
                 'medium' if len(custom_fields) < 20 else 'high',
-                'Les champs custom (x_*) doivent être recréés ou migrés via un module '
-                'custom sur la base cible. Vérifier la compatibilité avec la nouvelle version.',
+                _('Custom fields (x_*) must be recreated or migrated through a custom '
+                  'module on the target database. Check compatibility with the new version.'),
             ))
 
         # ── Actions Python serveur — uniquement celles sans xml_id (créées manuellement)
@@ -369,11 +369,11 @@ class MigrationDiagnostic(models.Model):
         if python_actions:
             risks.append(self._mk_risk(
                 'python_server_actions',
-                f'{len(python_actions)} actions serveur Python custom',
-                'Des actions serveur avec du code Python ont été détectées (bindées sur des modèles).',
+                _('%s custom Python server actions') % len(python_actions),
+                _('Server actions with Python code were detected (bound to models).'),
                 'medium',
-                'Le code Python des actions serveur peut nécessiter une adaptation '
-                'lors de la migration (API Odoo modifiée entre versions).',
+                _('The Python code of server actions may require adaptation '
+                  'during migration (Odoo API changes between versions).'),
             ))
 
         # ── Règles d'automatisation ────────────────────────────────────────────
@@ -386,11 +386,11 @@ class MigrationDiagnostic(models.Model):
                 if automations:
                     risks.append(self._mk_risk(
                         'automation_rules',
-                        f'{len(automations)} règles d\'automatisation',
-                        'Des règles d\'automatisation sont configurées.',
+                        _('%s automation rules') % len(automations),
+                        _('Automation rules are configured.'),
                         'low',
-                        'Les règles d\'automatisation sont généralement migrées automatiquement, '
-                        'mais vérifier leur compatibilité avec la nouvelle version Odoo.',
+                        _('Automation rules are usually migrated automatically, '
+                          'but check their compatibility with the new Odoo version.'),
                     ))
             else:
                 self.automation_rule_count = 0
@@ -401,24 +401,24 @@ class MigrationDiagnostic(models.Model):
         if self.module_count_custom > 0:
             risks.append(self._mk_risk(
                 'custom_modules',
-                f'{self.module_count_custom} module(s) custom / tiers détecté(s)',
-                'Ces modules nécessitent un portage vers la version cible.',
+                _('%s custom / third-party module(s) detected') % self.module_count_custom,
+                _('These modules need to be ported to the target version.'),
                 'high' if self.module_count_custom > 3 else 'medium',
-                'Chaque module custom doit être évalué individuellement : certains peuvent '
-                'avoir une version compatible disponible, d\'autres nécessiteront un portage complet. '
-                'Contacter les éditeurs ou prévoir le développement.',
+                _('Each custom module must be assessed individually: some may '
+                  'have a compatible version available, others will require a full port. '
+                  'Contact the vendors or plan for development.'),
             ))
 
         # ── Modules OCA ────────────────────────────────────────────────────────
         if self.module_count_oca > 0:
             risks.append(self._mk_risk(
                 'oca_modules',
-                f'{self.module_count_oca} module(s) OCA',
-                'Les modules OCA sont généralement disponibles pour les nouvelles versions.',
+                _('%s OCA module(s)') % self.module_count_oca,
+                _('OCA modules are usually available for new versions.'),
                 'low',
-                'Vérifier la disponibilité de chaque module OCA pour la version cible '
-                'sur https://github.com/OCA. La plupart sont disponibles rapidement après '
-                'chaque nouvelle version d\'Odoo.',
+                _('Check the availability of each OCA module for the target version '
+                  'on https://github.com/OCA. Most are available shortly after '
+                  'each new Odoo release.'),
             ))
 
         # ── Localisation détectée ─────────────────────────────────────────────
@@ -430,12 +430,12 @@ class MigrationDiagnostic(models.Model):
             l10n_names = ', '.join(l10n_modules.mapped('name'))
             risks.append(self._mk_risk(
                 'localization',
-                f'Localisation(s) détectée(s) : {l10n_names}',
-                'Des modules de localisation comptable sont installés.',
+                _('Localization(s) detected: %s') % l10n_names,
+                _('Accounting localization modules are installed.'),
                 'medium',
-                'Les localisations (plan comptable, TVA, FEC...) nécessitent une attention '
-                'particulière lors de la migration. Vérifier la compatibilité avec la version '
-                'cible et les obligations légales (facturation électronique pour l10n_fr).',
+                _('Localizations (chart of accounts, VAT, FEC...) require special '
+                  'attention during migration. Check compatibility with the target '
+                  'version and legal obligations (electronic invoicing for l10n_fr).'),
             ))
 
         # ── Volume pièces comptables ───────────────────────────────────────────
@@ -444,12 +444,12 @@ class MigrationDiagnostic(models.Model):
             if move_count > 50000:
                 risks.append(self._mk_risk(
                     'accounting_volume',
-                    f'Volume comptable élevé : {move_count:,} pièces',
-                    'Un volume important de pièces comptables augmente la complexité.',
+                    _('High accounting volume: %s entries') % f'{move_count:,}',
+                    _('A large volume of journal entries increases complexity.'),
                     'high' if move_count > 200000 else 'medium',
-                    'Prévoir une migration par segments (journal par journal, exercice par exercice). '
-                    'Utiliser l\'opération "Segment Import" du module de synchronisation. '
-                    'Valider les balances avant/après migration.',
+                    _('Plan a segmented migration (journal by journal, fiscal year by fiscal year). '
+                      'Use the "Segment Import" operation of the synchronization module. '
+                      'Validate balances before and after migration.'),
                 ))
 
         # ── Pièces jointes ────────────────────────────────────────────────────
@@ -458,11 +458,11 @@ class MigrationDiagnostic(models.Model):
             if attach_count > 10000:
                 risks.append(self._mk_risk(
                     'attachments_volume',
-                    f'Volume pièces jointes : {attach_count:,} fichiers',
-                    'Un volume important de pièces jointes ralentit la migration.',
+                    _('Attachment volume: %s files') % f'{attach_count:,}',
+                    _('A large volume of attachments slows down the migration.'),
                     'medium',
-                    'Planifier la migration des pièces jointes en dernier. '
-                    'Vérifier l\'espace disque disponible sur la base cible.',
+                    _('Schedule the migration of attachments last. '
+                      'Check the available disk space on the target database.'),
                 ))
 
         # ── Utilisateurs actifs ───────────────────────────────────────────────
@@ -470,11 +470,11 @@ class MigrationDiagnostic(models.Model):
         if user_count > 50:
             risks.append(self._mk_risk(
                 'users_count',
-                f'{user_count} utilisateurs internes actifs',
-                'Un nombre élevé d\'utilisateurs nécessite une validation des droits post-migration.',
+                _('%s active internal users') % user_count,
+                _('A high number of users requires validation of access rights after migration.'),
                 'low',
-                'Prévoir une phase de validation des droits d\'accès et des règles de sécurité '
-                'après migration. Les conflits de login sont gérés automatiquement par le moteur.',
+                _('Plan a phase to validate access rights and security rules '
+                  'after migration. Login conflicts are handled automatically by the engine.'),
             ))
 
         if risks:
@@ -591,18 +591,18 @@ class MigrationDiagnostic(models.Model):
         level = self.complexity_level
 
         styles = {
-            'low':      ('success', '#d4edda', '#155724', '✅ Complexité FAIBLE'),
-            'medium':   ('warning', '#fff3cd', '#856404', '⚠️ Complexité MOYENNE'),
-            'high':     ('danger',  '#f8d7da', '#721c24', '🔴 Complexité ÉLEVÉE'),
-            'critical': ('danger',  '#f5c6cb', '#491217', '🚨 Complexité CRITIQUE'),
+            'low':      ('success', '#d4edda', '#155724', _('✅ Complexity: LOW')),
+            'medium':   ('warning', '#fff3cd', '#856404', _('⚠️ Complexity: MEDIUM')),
+            'high':     ('danger',  '#f8d7da', '#721c24', _('🔴 Complexity: HIGH')),
+            'critical': ('danger',  '#f5c6cb', '#491217', _('🚨 Complexity: CRITICAL')),
         }
-        _, bg, color, label = styles.get(level, styles['medium'])
+        _unused, bg, color, label = styles.get(level, styles['medium'])
 
         intros = {
-            'low': "Votre installation est principalement composée de modules standard Odoo avec peu de personnalisations. Une migration peut être planifiée avec confiance.",
-            'medium': "Des points d'attention ont été identifiés (modules OCA, champs custom, volumes modérés). Une migration est réalisable avec une préparation rigoureuse.",
-            'high': "Des modules custom, des volumes importants ou des configurations spécifiques ont été détectés. Un accompagnement spécialisé est fortement recommandé.",
-            'critical': "La combinaison de modules custom importants, de volumes élevés et de spécificités fonctionnelles nécessite un projet de migration structuré avec un expert Odoo.",
+            'low': _("Your installation mainly consists of standard Odoo modules with few customizations. A migration can be planned with confidence."),
+            'medium': _("Some points of attention were identified (OCA modules, custom fields, moderate volumes). A migration is achievable with rigorous preparation."),
+            'high': _("Custom modules, large volumes or specific configurations were detected. Specialized support is strongly recommended."),
+            'critical': _("The combination of significant custom modules, high volumes and functional specifics requires a structured migration project with an Odoo expert."),
         }
 
         self.recommendation = f"""
@@ -612,137 +612,137 @@ class MigrationDiagnostic(models.Model):
 </div>
 <div style="display:flex; gap:16px; margin-top:12px;">
     <div style="flex:1; background:#f0f4ff; border:1px solid #c7d2fe; border-radius:6px; padding:14px;">
-        <b style="color:#3730a3;">📊 Résumé de votre base</b>
+        <b style="color:#3730a3;">📊 Your database at a glance</b>
         <ul style="margin:8px 0 0 0; padding-left:20px; line-height:1.8;">
-            <li><b>{self.module_count_total}</b> modules installés ({self.module_count_custom} custom)</li>
-            <li><b>{self.total_records:,}</b> enregistrements estimés</li>
-            <li><b>{self.company_count}</b> société(s) — {'⚠️ multi-société' if self.has_multicompany else '✅ mono-société'}</li>
-            <li><b>{self.custom_field_count}</b> champs personnalisés</li>
+            <li><b>{self.module_count_total}</b> installed modules ({self.module_count_custom} custom)</li>
+            <li><b>{self.total_records:,}</b> estimated records</li>
+            <li><b>{self.company_count}</b> company(ies) — {_('⚠️ multi-company') if self.has_multicompany else _('✅ single-company')}</li>
+            <li><b>{self.custom_field_count}</b> custom fields</li>
         </ul>
     </div>
     <div style="flex:1; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:14px;">
-        <b style="color:#166534;">⏱️ Estimation de charge</b>
-        <p style="margin:8px 0 0 0; font-size:22px; font-weight:bold; color:#166534;">{self.estimated_days_min} – {self.estimated_days_max} j/h</p>
-        <p style="margin:4px 0 0 0; color:#666; font-size:12px;">Pour un intégrateur Odoo expérimenté</p>
+        <b style="color:#166534;">⏱️ Effort estimate</b>
+        <p style="margin:8px 0 0 0; font-size:22px; font-weight:bold; color:#166534;">{self.estimated_days_min} – {self.estimated_days_max} d</p>
+        <p style="margin:4px 0 0 0; color:#666; font-size:12px;">For an experienced Odoo integrator</p>
     </div>
 </div>
 """
 
-        self.phase1_notes = """
+        self.phase1_notes = _("""
 <table style="width:100%; border-collapse:collapse; font-size:13px;">
     <thead>
         <tr style="background:#e8eaf6; color:#3730a3;">
             <th style="padding:8px 12px; text-align:left; width:4%;">#</th>
-            <th style="padding:8px 12px; text-align:left; width:30%;">Modèle</th>
-            <th style="padding:8px 12px; text-align:left; width:25%;">Opération</th>
-            <th style="padding:8px 12px; text-align:left;">Points d'attention</th>
+            <th style="padding:8px 12px; text-align:left; width:30%;">Model</th>
+            <th style="padding:8px 12px; text-align:left; width:25%;">Operation</th>
+            <th style="padding:8px 12px; text-align:left;">Watch-outs</th>
         </tr>
     </thead>
     <tbody>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">1</td>
-            <td style="padding:8px 12px;"><b>res.users</b><br/><span style="color:#888;font-size:11px;">Utilisateurs</span></td>
+            <td style="padding:8px 12px;"><b>res.users</b><br/><span style="color:#888;font-size:11px;">Users</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import + Link Mapping</span></td>
-            <td style="padding:8px 12px;">Migrer en <b>premier</b>. Conflits de login gérés automatiquement.</td>
+            <td style="padding:8px 12px;">Migrate <b>first</b>. Login conflicts handled automatically.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb; background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">2</td>
-            <td style="padding:8px 12px;"><b>account.account</b><br/><span style="color:#888;font-size:11px;">Plan comptable</span></td>
+            <td style="padding:8px 12px;"><b>account.account</b><br/><span style="color:#888;font-size:11px;">Chart of accounts</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import + Link Mapping</span></td>
-            <td style="padding:8px 12px;">Faire un <b>Link Mapping</b> sur les comptes existants avant l'import.</td>
+            <td style="padding:8px 12px;">Perform a <b>Link Mapping</b> on existing accounts before the import.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">3</td>
-            <td style="padding:8px 12px;"><b>account.journal</b><br/><span style="color:#888;font-size:11px;">Journaux</span></td>
+            <td style="padding:8px 12px;"><b>account.journal</b><br/><span style="color:#888;font-size:11px;">Journals</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import + Link Mapping</span></td>
-            <td style="padding:8px 12px;">Vérifier les codes journaux après import.</td>
+            <td style="padding:8px 12px;">Check the journal codes after import.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb; background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">4</td>
             <td style="padding:8px 12px;"><b>account.tax</b><br/><span style="color:#888;font-size:11px;">Taxes</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import + Link Mapping</span></td>
-            <td style="padding:8px 12px;">Attention aux codes renommés entre versions Odoo.</td>
+            <td style="padding:8px 12px;">Beware of codes renamed between Odoo versions.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">5</td>
-            <td style="padding:8px 12px;"><b>stock.warehouse</b><br/><span style="color:#888;font-size:11px;">Entrepôts</span></td>
-            <td style="padding:8px 12px;"><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;">⚠️ Création MANUELLE</span></td>
-            <td style="padding:8px 12px;">Ne pas migrer via le module. Créer manuellement + Link Mapping.</td>
+            <td style="padding:8px 12px;"><b>stock.warehouse</b><br/><span style="color:#888;font-size:11px;">Warehouses</span></td>
+            <td style="padding:8px 12px;"><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;">⚠️ MANUAL creation</span></td>
+            <td style="padding:8px 12px;">Do not migrate through the module. Create manually + Link Mapping.</td>
         </tr>
         <tr style="background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">6</td>
-            <td style="padding:8px 12px;"><b>stock.picking.type</b><br/><span style="color:#888;font-size:11px;">Types d'opération</span></td>
-            <td style="padding:8px 12px;"><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;">⚠️ Mapping MANUEL</span></td>
-            <td style="padding:8px 12px;">Créés par l'entrepôt Odoo. Utiliser link_mapping pour aligner les IDs.</td>
+            <td style="padding:8px 12px;"><b>stock.picking.type</b><br/><span style="color:#888;font-size:11px;">Operation types</span></td>
+            <td style="padding:8px 12px;"><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;">⚠️ MANUAL mapping</span></td>
+            <td style="padding:8px 12px;">Created by the Odoo warehouse. Use link_mapping to align the IDs.</td>
         </tr>
     </tbody>
 </table>
-"""
+""")
 
-        self.phase2_notes = """
+        self.phase2_notes = _("""
 <table style="width:100%; border-collapse:collapse; font-size:13px;">
     <thead>
         <tr style="background:#e8eaf6; color:#3730a3;">
             <th style="padding:8px 12px; text-align:left; width:4%;">#</th>
-            <th style="padding:8px 12px; text-align:left; width:30%;">Modèle</th>
-            <th style="padding:8px 12px; text-align:left; width:25%;">Opération</th>
-            <th style="padding:8px 12px; text-align:left;">Points d'attention</th>
+            <th style="padding:8px 12px; text-align:left; width:30%;">Model</th>
+            <th style="padding:8px 12px; text-align:left; width:25%;">Operation</th>
+            <th style="padding:8px 12px; text-align:left;">Watch-outs</th>
         </tr>
     </thead>
     <tbody>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">1</td>
-            <td style="padding:8px 12px;"><b>res.partner</b><br/><span style="color:#888;font-size:11px;">Partenaires</span></td>
+            <td style="padding:8px 12px;"><b>res.partner</b><br/><span style="color:#888;font-size:11px;">Partners</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import → Audit Unsynced</span></td>
-            <td style="padding:8px 12px;">Attention aux partenaires liés à des utilisateurs (éviter les doublons).</td>
+            <td style="padding:8px 12px;">Beware of partners linked to users (avoid duplicates).</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb; background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">2</td>
-            <td style="padding:8px 12px;"><b>product.template</b><br/><span style="color:#888;font-size:11px;">Produits</span></td>
+            <td style="padding:8px 12px;"><b>product.template</b><br/><span style="color:#888;font-size:11px;">Products</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import Datas</span></td>
-            <td style="padding:8px 12px;">Le hook gère automatiquement les variantes. Ne pas lancer product.product séparément.</td>
+            <td style="padding:8px 12px;">The hook handles variants automatically. Do not run product.product separately.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">3</td>
-            <td style="padding:8px 12px;"><b>sale.order</b><br/><span style="color:#888;font-size:11px;">Commandes client</span></td>
+            <td style="padding:8px 12px;"><b>sale.order</b><br/><span style="color:#888;font-size:11px;">Sales orders</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import → Audit → Specific</span></td>
-            <td style="padding:8px 12px;">Vérifier les états (draft/confirmed/done). Lignes migrées via O2M.</td>
+            <td style="padding:8px 12px;">Check the states (draft/confirmed/done). Lines migrated via O2M.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb; background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">4</td>
-            <td style="padding:8px 12px;"><b>purchase.order</b><br/><span style="color:#888;font-size:11px;">Commandes fourn.</span></td>
+            <td style="padding:8px 12px;"><b>purchase.order</b><br/><span style="color:#888;font-size:11px;">Purchase orders</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import → Audit → Specific</span></td>
-            <td style="padding:8px 12px;">Même logique que sale.order. Vérifier les taxes sur lignes.</td>
+            <td style="padding:8px 12px;">Same logic as sale.order. Check the taxes on lines.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">5</td>
-            <td style="padding:8px 12px;"><b>account.move</b><br/><span style="color:#888;font-size:11px;">Pièces comptables</span></td>
+            <td style="padding:8px 12px;"><b>account.move</b><br/><span style="color:#888;font-size:11px;">Journal entries</span></td>
             <td style="padding:8px 12px;"><span style="background:#fef2f2;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;">⚠️ Segment Import</span></td>
-            <td style="padding:8px 12px;">Migrer <b>journal par journal</b>. Lancer <code>create_queue_for_unbalanced_moves</code> après chaque batch.</td>
+            <td style="padding:8px 12px;">Migrate <b>journal by journal</b>. Run <code>create_queue_for_unbalanced_moves</code> after each batch.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb; background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">6</td>
-            <td style="padding:8px 12px;"><b>stock.picking</b><br/><span style="color:#888;font-size:11px;">Transferts stock</span></td>
+            <td style="padding:8px 12px;"><b>stock.picking</b><br/><span style="color:#888;font-size:11px;">Stock transfers</span></td>
             <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import Datas</span></td>
-            <td style="padding:8px 12px;">Mouvements et lignes gérés récursivement (O2M). Vérifier l'état des transferts.</td>
+            <td style="padding:8px 12px;">Moves and lines handled recursively (O2M). Check the state of the transfers.</td>
         </tr>
         <tr style="border-bottom:1px solid #e5e7eb;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">7</td>
             <td style="padding:8px 12px;"><b>mail.message</b><br/><span style="color:#888;font-size:11px;">Chatter</span></td>
-            <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import par modèle</span></td>
-            <td style="padding:8px 12px;">Utiliser le domaine <code>res_model = 'sale.order'</code>. Parents migrés en premier.</td>
+            <td style="padding:8px 12px;"><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;">Import by model</span></td>
+            <td style="padding:8px 12px;">Use the domain <code>res_model = 'sale.order'</code>. Parents migrated first.</td>
         </tr>
         <tr style="background:#fafafa;">
             <td style="padding:8px 12px; font-weight:bold; color:#3730a3;">8</td>
-            <td style="padding:8px 12px;"><b>ir.attachment</b><br/><span style="color:#888;font-size:11px;">Pièces jointes</span></td>
-            <td style="padding:8px 12px;"><span style="background:#f0fdf4;color:#166534;padding:2px 8px;border-radius:4px;font-size:11px;">Import EN DERNIER</span></td>
-            <td style="padding:8px 12px;">Migrer en dernier. Vérifier les volumes (espace disque).</td>
+            <td style="padding:8px 12px;"><b>ir.attachment</b><br/><span style="color:#888;font-size:11px;">Attachments</span></td>
+            <td style="padding:8px 12px;"><span style="background:#f0fdf4;color:#166534;padding:2px 8px;border-radius:4px;font-size:11px;">Import LAST</span></td>
+            <td style="padding:8px 12px;">Migrate last. Check the volumes (disk space).</td>
         </tr>
     </tbody>
 </table>
 <div style="background:#fef3c7; border:1px solid #fcd34d; border-radius:6px; padding:12px; margin-top:12px;">
-    <b style="color:#92400e;">⚠️ Règle d'or :</b>
-    <span style="color:#92400e;"> TOUJOURS valider chaque modèle avant de passer au suivant.<br/>
-    Workflow : <code>Import</code> → <code>Audit Unsynced</code> → <code>Import Specific</code> sur erreurs → <code>Validate</code></span>
+    <b style="color:#92400e;">⚠️ Golden rule:</b>
+    <span style="color:#92400e;"> ALWAYS validate each model before moving on to the next.<br/>
+    Workflow: <code>Import</code> → <code>Audit Unsynced</code> → <code>Import Specific</code> on errors → <code>Validate</code></span>
 </div>
-"""
+""")
