@@ -2,7 +2,7 @@
 <odoo>
     <!-- Action du wizard définie ICI, avant le menuitem qui la référence -->
     <record id="action_migration_scan_wizard" model="ir.actions.act_window">
-        <field name="name">Nouveau diagnostic de migration</field>
+        <field name="name">New migration diagnostic</field>
         <field name="res_model">migration.scan.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -14,13 +14,13 @@
               sequence="90"/>
 
     <menuitem id="menu_migration_diagnostic_new"
-              name="Nouveau diagnostic"
+              name="New diagnostic"
               parent="menu_migration_diagnostic_root"
               action="migration_diagnostic.action_migration_scan_wizard"
               sequence="1"/>
 
     <menuitem id="menu_migration_diagnostic_list"
-              name="Historique des diagnostics"
+              name="Diagnostic history"
               parent="menu_migration_diagnostic_root"
               action="migration_diagnostic.action_migration_diagnostic"
               sequence="2"/>

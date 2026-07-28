@@ -4,7 +4,7 @@
         <field name="name">migration.scan.wizard.form</field>
         <field name="model">migration.scan.wizard</field>
         <field name="arch" type="xml">
-            <form string="Lancer le diagnostic de migration">
+            <form string="Launch the migration diagnostic">
                 <group>
                     <field name="name"/>
                 </group>
@@ -15,8 +15,8 @@
                 <field name="info" widget="html" readonly="1"/>
                 <footer>
                     <button name="action_launch_scan" type="object"
-                            string="🚀 Lancer le scan" class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                            string="🚀 Launch scan" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

@@ -3,26 +3,26 @@ from odoo import models, fields
 
 class MigrationDiagnosticVolume(models.Model):
     _name = 'migration.diagnostic.volume'
-    _description = 'Volume de données analysé'
+    _description = 'Analyzed data volume'
     _order = 'phase, migration_priority'
 
     diagnostic_id = fields.Many2one('migration.diagnostic', ondelete='cascade', required=True)
-    model_name = fields.Char(string='Modèle Odoo', required=True)
-    label = fields.Char(string='Libellé')
+    model_name = fields.Char(string='Odoo model', required=True)
+    label = fields.Char(string='Label')
     phase = fields.Selection([
-        ('1', 'Phase 1 — Socle référentiel'),
-        ('2', 'Phase 2 — Données métier'),
-    ], string='Phase de migration')
-    migration_priority = fields.Integer(string='Ordre de migration')
-    record_count = fields.Integer(string='Nombre d\'enregistrements')
+        ('1', 'Phase 1 — Reference data'),
+        ('2', 'Phase 2 — Business data'),
+    ], string='Migration phase')
+    migration_priority = fields.Integer(string='Migration order')
+    record_count = fields.Integer(string='Number of records')
     volume_level = fields.Selection([
-        ('none',     'Vide'),
-        ('low',      'Faible (< 1 000)'),
-        ('medium',   'Moyen (1k – 10k)'),
-        ('high',     'Élevé (10k – 100k)'),
-        ('critical', 'Critique (> 100k)'),
-    ], string='Niveau de volume')
-    available = fields.Boolean(string='Modèle disponible', default=True)
+        ('none',     'Empty'),
+        ('low',      'Low (< 1,000)'),
+        ('medium',   'Medium (1k – 10k)'),
+        ('high',     'High (10k – 100k)'),
+        ('critical', 'Critical (> 100k)'),
+    ], string='Volume level')
+    available = fields.Boolean(string='Model available', default=True)
     volume_color = fields.Integer(compute='_compute_volume_color')
 
     def _compute_volume_color(self):

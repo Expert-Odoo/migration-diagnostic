@@ -1,0 +1,1708 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* migration_diagnostic
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0-20240924\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-28 14:27+0000\n"
+"PO-Revision-Date: 2026-07-28 14:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/wizard/migration_scan_wizard.py:0
+#, python-format
+msgid ""
+"\n"
+"        <div class=\"alert alert-info\">\n"
+"            <b>🔍 What the scan analyzes:</b><br/>\n"
+"            <ul>\n"
+"                <li>Full inventory of installed modules (standard / OCA / custom)</li>\n"
+"                <li>Volume of critical data (partners, invoices, orders...)</li>\n"
+"                <li>Risk factor detection (multi-company, custom fields, Python actions...)</li>\n"
+"                <li>Global complexity score and effort estimate</li>\n"
+"                <li>Recommendations by migration phase</li>\n"
+"            </ul>\n"
+"            <b>⏱ Estimated duration:</b> 10 to 60 seconds depending on database size.\n"
+"        </div>\n"
+"        "
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"\n"
+"<div style=\"background:%(bg)s; border-left:4px solid %(color)s; border-radius:4px; padding:16px; margin-bottom:8px;\">\n"
+"    <h4 style=\"color:%(color)s; margin:0 0 8px 0;\">%(label)s</h4>\n"
+"    <p style=\"margin:0; color:%(color)s;\">%(intro)s</p>\n"
+"</div>\n"
+"<div style=\"display:flex; gap:16px; margin-top:12px;\">\n"
+"    <div style=\"flex:1; background:#f0f4ff; border:1px solid #c7d2fe; border-radius:6px; padding:14px;\">\n"
+"        <b style=\"color:#3730a3;\">📊 Summary of your database</b>\n"
+"        <ul style=\"margin:8px 0 0 0; padding-left:20px; line-height:1.8;\">\n"
+"            <li><b>%(modules_total)s</b> installed modules (%(modules_custom)s custom)</li>\n"
+"            <li><b>%(records)s</b> estimated records</li>\n"
+"            <li><b>%(companies)s</b> company(ies) — %(multi)s</li>\n"
+"            <li><b>%(custom_fields)s</b> custom fields</li>\n"
+"        </ul>\n"
+"    </div>\n"
+"    <div style=\"flex:1; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:14px;\">\n"
+"        <b style=\"color:#166534;\">⏱️ Effort estimate</b>\n"
+"        <p style=\"margin:8px 0 0 0; font-size:22px; font-weight:bold; color:#166534;\">%(days_min)s – %(days_max)s days</p>\n"
+"        <p style=\"margin:4px 0 0 0; color:#666; font-size:12px;\">For an experienced Odoo integrator</p>\n"
+"    </div>\n"
+"</div>\n"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"\n"
+"<table style=\"width:100%; border-collapse:collapse; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr style=\"background:#e8eaf6; color:#3730a3;\">\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:4%;\">#</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:30%;\">Model</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:25%;\">Operation</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left;\">Watch-outs</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">1</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>res.partner</b><br/><span style=\"color:#888;font-size:11px;\">Partners</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import → Audit Unsynced</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Beware of partners linked to users (avoid duplicates).</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb; background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">2</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>product.template</b><br/><span style=\"color:#888;font-size:11px;\">Products</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import Datas</span></td>\n"
+"            <td style=\"padding:8px 12px;\">The hook handles variants automatically. Do not run product.product separately.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">3</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>sale.order</b><br/><span style=\"color:#888;font-size:11px;\">Sales orders</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import → Audit → Specific</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Check states (draft/confirmed/done). Lines migrated via O2M.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb; background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">4</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>purchase.order</b><br/><span style=\"color:#888;font-size:11px;\">Purchase orders</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import → Audit → Specific</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Same logic as sale.order. Check taxes on lines.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">5</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>account.move</b><br/><span style=\"color:#888;font-size:11px;\">Journal entries</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#fef2f2;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;\">⚠️ Segment Import</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Migrate <b>journal by journal</b>. Run <code>create_queue_for_unbalanced_moves</code> after each batch.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb; background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">6</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>stock.picking</b><br/><span style=\"color:#888;font-size:11px;\">Stock transfers</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import Datas</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Moves and lines handled recursively (O2M). Check the transfer state.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">7</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>mail.message</b><br/><span style=\"color:#888;font-size:11px;\">Chatter</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import per model</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Use the domain <code>res_model = 'sale.order'</code>. Parents migrated first.</td>\n"
+"        </tr>\n"
+"        <tr style=\"background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">8</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>ir.attachment</b><br/><span style=\"color:#888;font-size:11px;\">Attachments</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#f0fdf4;color:#166534;padding:2px 8px;border-radius:4px;font-size:11px;\">Import LAST</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Migrate last. Check volumes (disk space).</td>\n"
+"        </tr>\n"
+"    </tbody>\n"
+"</table>\n"
+"<div style=\"background:#fef3c7; border:1px solid #fcd34d; border-radius:6px; padding:12px; margin-top:12px;\">\n"
+"    <b style=\"color:#92400e;\">⚠️ Golden rule:</b>\n"
+"    <span style=\"color:#92400e;\"> ALWAYS validate each model before moving to the next.<br/>\n"
+"    Workflow: <code>Import</code> → <code>Audit Unsynced</code> → <code>Import Specific</code> on errors → <code>Validate</code></span>\n"
+"</div>\n"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"\n"
+"<table style=\"width:100%; border-collapse:collapse; font-size:13px;\">\n"
+"    <thead>\n"
+"        <tr style=\"background:#e8eaf6; color:#3730a3;\">\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:4%;\">#</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:30%;\">Model</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left; width:25%;\">Operation</th>\n"
+"            <th style=\"padding:8px 12px; text-align:left;\">Watch-outs</th>\n"
+"        </tr>\n"
+"    </thead>\n"
+"    <tbody>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">1</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>res.users</b><br/><span style=\"color:#888;font-size:11px;\">Users</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import + Link Mapping</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Migrate <b>first</b>. Login conflicts handled automatically.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb; background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">2</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>account.account</b><br/><span style=\"color:#888;font-size:11px;\">Chart of accounts</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import + Link Mapping</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Do a <b>Link Mapping</b> on existing accounts before import.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">3</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>account.journal</b><br/><span style=\"color:#888;font-size:11px;\">Journals</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import + Link Mapping</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Check journal codes after import.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb; background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">4</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>account.tax</b><br/><span style=\"color:#888;font-size:11px;\">Taxes</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;\">Import + Link Mapping</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Beware of codes renamed between Odoo versions.</td>\n"
+"        </tr>\n"
+"        <tr style=\"border-bottom:1px solid #e5e7eb;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">5</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>stock.warehouse</b><br/><span style=\"color:#888;font-size:11px;\">Warehouses</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;\">⚠️ MANUAL creation</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Do not migrate via the module. Create manually + Link Mapping.</td>\n"
+"        </tr>\n"
+"        <tr style=\"background:#fafafa;\">\n"
+"            <td style=\"padding:8px 12px; font-weight:bold; color:#3730a3;\">6</td>\n"
+"            <td style=\"padding:8px 12px;\"><b>stock.picking.type</b><br/><span style=\"color:#888;font-size:11px;\">Operation types</span></td>\n"
+"            <td style=\"padding:8px 12px;\"><span style=\"background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:11px;\">⚠️ MANUAL mapping</span></td>\n"
+"            <td style=\"padding:8px 12px;\">Created by the Odoo warehouse. Use link_mapping to align the IDs.</td>\n"
+"        </tr>\n"
+"    </tbody>\n"
+"</table>\n"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "#f0fff4"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "#fff"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "#fff5f5"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "#fffbeb"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%(min)s – %(max)s days"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%(model)s: %(count)s fields"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s OCA module(s)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s active internal users"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s automation rules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s companies in the database."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s custom / third-party module(s) detected"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s custom Python server actions"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "%s custom fields detected"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.actions.report,print_report_name:migration_diagnostic.action_report_migration_diagnostic
+msgid "'Migration Diagnostic - ' + object.name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "/ 100"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "<b>Scan error:</b>"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"A high number of users requires validating access rights after migration."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "A large volume of attachments slows down migration."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "A large volume of journal entries increases complexity."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Accounting localization modules are installed."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model,name:migration_diagnostic.model_migration_diagnostic_module
+msgid "Analyzed Odoo module"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model,name:migration_diagnostic.model_migration_diagnostic_volume
+msgid "Analyzed data volume"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__module_line_ids
+msgid "Analyzed modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__state__scanning
+msgid "Analyzing..."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Attachments"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Attachments volume: %s files"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__author
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Author"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__automation_rule_count
+msgid "Automation rules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Automation rules are configured."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Automation rules are usually migrated automatically, but check their "
+"compatibility with the new Odoo version."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "CRITICAL 🚨"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "CRM leads"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_scan_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__category
+msgid "Category"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Chart of accounts"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Check the availability of each OCA module for the target version on "
+"https://github.com/OCA. Most are available shortly after each new Odoo "
+"release."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__code
+msgid "Code"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Company(ies)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__complexity_color
+msgid "Complexity Color"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__complexity_level
+msgid "Complexity level"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__complexity_score
+msgid "Complexity score"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Complexity:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_scan_wizard__include_messages
+msgid "Counting messages can be slow on large databases."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__create_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__create_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__create_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__create_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__create_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__create_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__create_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__create_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__volume_level__critical
+msgid "Critical (> 100k)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__complexity_level__critical
+msgid "Critical 🚨"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Custom"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__category__custom
+msgid "Custom / third-party"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__module_count_custom
+msgid "Custom / third-party modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Custom fields"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__custom_field_count
+msgid "Custom fields (ir.model.fields)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Custom fields (x_*) must be recreated or migrated through a custom module on"
+" the target database. Check compatibility with the new version."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Custom modules, large volumes or specific configurations have been detected."
+" Specialized support is strongly recommended."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Customizations"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Data"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__volume_line_ids
+msgid "Data volumes"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__shortdesc
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Description"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__description
+msgid "Detail"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__risk_line_ids
+msgid "Detected risk factors"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Detected risk factors ("
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__diagnostic_id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__diagnostic_id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__diagnostic_id
+msgid "Diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.ui.menu,name:migration_diagnostic.menu_migration_diagnostic_list
+msgid "Diagnostic history"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Diagnostic name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Diagnostic of %s"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/wizard/migration_scan_wizard.py:0
+#, python-format
+msgid "Diagnostic result"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__display_name
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__display_name
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__display_name
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__display_name
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__state__done
+msgid "Done"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Duration (s)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Each company requires checking journals, taxes and accounts. Inter-company "
+"rules may need manual reconfiguration."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Each custom module must be assessed individually: some may have a compatible"
+" version available, others will require a full port. Contact the publishers "
+"or plan the development."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Employees"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__volume_level__none
+msgid "Empty"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__state__error
+msgid "Error"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__error_message
+msgid "Error message"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__estimated_days_label
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_list
+msgid "Estimate"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Estimate:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__estimated_days_max
+msgid "Estimated effort max (days)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__estimated_days_min
+msgid "Estimated effort min (days)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Estimated records"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Factor"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__complexity_score
+msgid ""
+"Global score from 0 to 100. The higher it is, the more complex the "
+"migration."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Global score:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "HIGH 🔴"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__risk_level__high
+msgid "High"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__volume_level__high
+msgid "High (10k – 100k)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "High accounting volume: %s entries"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__complexity_level__high
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_risk__risk_level__high
+msgid "High 🔴"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__id
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_needaction
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_unread
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__include_attachments
+msgid "Include ir.attachment count"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__include_messages
+msgid "Include mail.message count"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__info
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Information"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Installed modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__installed_version
+msgid "Installed version"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Journal entries"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Journal items"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Journals"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "LOW ✅"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__label
+msgid "Label"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic____last_update
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module____last_update
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk____last_update
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume____last_update
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__write_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__write_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__write_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__write_uid
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__write_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__write_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__write_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__write_date
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__latest_version
+msgid "Latest version"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_scan_wizard_form
+msgid "Launch the migration diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Level"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Localization(s) detected: %s"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Localizations (chart of accounts, VAT, FEC...) require special attention "
+"during migration. Check compatibility with the target version and legal "
+"obligations (electronic invoicing for l10n_fr)."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__risk_level__low
+msgid "Low"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__volume_level__low
+msgid "Low (< 1,000)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__complexity_level__low
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_risk__risk_level__low
+msgid "Low ✅"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "MEDIUM ⚠️"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Manufacturing orders"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__risk_level__medium
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Medium"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__volume_level__medium
+msgid "Medium (1k – 10k)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic__complexity_level__medium
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_risk__risk_level__medium
+msgid "Medium ⚠️"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Messages / Chatter"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.ui.menu,name:migration_diagnostic.menu_migration_diagnostic_root
+msgid "Migration Diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Migration diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.actions.report,name:migration_diagnostic.action_report_migration_diagnostic
+msgid "Migration diagnostic report"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model,name:migration_diagnostic.model_migration_scan_wizard
+msgid "Migration diagnostic wizard"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/wizard/migration_scan_wizard.py:0
+#, python-format
+msgid "Migration diagnostic — %s"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.actions.act_window,name:migration_diagnostic.action_migration_diagnostic
+msgid "Migration diagnostics"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__migration_priority
+msgid "Migration order"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__phase
+msgid "Migration phase"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__risk_level
+msgid "Migration risk"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model,name:migration_diagnostic.model_migration_diagnostic_risk
+msgid "Migration risk factor"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Model"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__available
+msgid "Model available"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Models involved: %s"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Module"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Module inventory"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__has_multicompany
+msgid "Multi-company"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Multi-company detected"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "N/A"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__name
+msgid "Name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.ui.menu,name:migration_diagnostic.menu_migration_diagnostic_new
+msgid "New diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.actions.act_window,name:migration_diagnostic.action_migration_scan_wizard
+msgid "New migration diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__notes
+msgid "Notes"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__company_count
+msgid "Number of companies"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__record_count
+msgid "Number of records"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__category__oca
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "OCA"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "OCA / Custom modules to review ("
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__module_count_oca
+msgid "OCA modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "OCA modules are usually available for new versions."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model,name:migration_diagnostic.model_migration_diagnostic
+msgid "Odoo Migration Diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Odoo migration diagnostic report"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__model_name
+msgid "Odoo model"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_scan_wizard_form
+msgid "Options"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_volume_list_embedded
+msgid "Order"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Partners / Contacts"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Ph."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Phase"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__phase1_notes
+msgid "Phase 1 notes — Reference data"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__phase__1
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Phase 1 — Reference data"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__phase2_notes
+msgid "Phase 2 notes — Business data"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_volume__phase__2
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Phase 2 — Business data"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Plan a phase to validate access rights and security rules after migration. "
+"Login conflicts are handled automatically by the engine."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Plan a segmented migration (journal by journal, fiscal year by fiscal year)."
+" Use the \"Segment Import\" operation of the synchronization module. "
+"Validate balances before/after migration."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Plan the attachments migration last. Check available disk space on the "
+"target database."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Product templates"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Product variants"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Purchase order lines"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Purchase orders"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Python actions:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__server_action_python_count
+msgid "Python server actions"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__recommendation
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Recommendation"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__recommendation
+msgid "Recommendations"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Recommended migration approach"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Records"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__name
+msgid "Reference"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid ""
+"Report generated by <b>Migration Diagnostic v15</b> — expodo.fr | "
+"Confidential document"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_scan_wizard__name
+msgid "Report name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Reset"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Risk"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__risk_color
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__risk_color
+msgid "Risk Color"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__name
+msgid "Risk factor"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_risk__risk_level
+msgid "Risk level"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.actions.act_window,help:migration_diagnostic.action_migration_diagnostic
+msgid "Run your first diagnostic"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Sales order lines"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Sales orders"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__scan_date
+msgid "Scan date"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__scan_duration
+msgid "Scan duration (s)"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.actions.act_window,help:migration_diagnostic.action_migration_diagnostic
+msgid "Scan your Odoo database to get a migration feasibility report."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Score:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Server actions with Python code have been detected (bound to models)."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Some points of attention have been identified (OCA modules, custom fields, "
+"moderate volumes). A migration is achievable with rigorous preparation."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__source_version
+msgid "Source Odoo version"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Source version:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields.selection,name:migration_diagnostic.selection__migration_diagnostic_module__category__standard
+msgid "Standard Odoo"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__module_count_standard
+msgid "Standard Odoo modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__state
+msgid "Status"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Std:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Stock moves"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Stock transfers"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Summary"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Taxes"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_module__technical_name
+msgid "Technical name"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"The Python code of server actions may need to be adapted during migration "
+"(Odoo API changed between versions)."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"The combination of significant custom modules, high volumes and functional "
+"specifics requires a structured migration project with an Odoo expert."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "These modules require porting to the target version."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_volume_list_embedded
+msgid "Total"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__total_records
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "Total estimated records"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__module_count_total
+msgid "Total installed modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Type"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,help:migration_diagnostic.field_migration_diagnostic__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Users"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__volume_color
+msgid "Volume Color"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "Volume by model"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model:ir.model.fields,field_description:migration_diagnostic.field_migration_diagnostic_volume__volume_level
+msgid "Volume level"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "Warehouses"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid ""
+"Your installation is mainly made of standard Odoo modules with few "
+"customizations. A migration can be planned with confidence."
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "background: #28a745"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "background: #6f0000"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "background: #dc3545"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "background: #e6a817"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid ""
+"|\n"
+"                                    Custom:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid ""
+"|\n"
+"                                    OCA:"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid ""
+"—\n"
+"                            Generated on"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "⚠️ Complexity MEDIUM"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "⚠️ High"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "⚠️ Medium"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "⚠️ Multi-company"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "⚠️ Risk factors"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "⚠️ multi-company"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "✅ Complexity LOW"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "✅ Low"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "✅ Mono-company"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "✅ No major risk factor detected."
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "✅ mono-company"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "📄 Export PDF"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "📊 Data volumes"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "📋 Recommendations"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "📦 Installed modules"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_diagnostic_form
+msgid "🔍 Re-run scan"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "🔴 Complexity HIGH"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "🔴 Critical"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.report_migration_diagnostic_template
+msgid "🔴 High"
+msgstr ""
+
+#. module: migration_diagnostic
+#: model_terms:ir.ui.view,arch_db:migration_diagnostic.view_migration_scan_wizard_form
+msgid "🚀 Launch scan"
+msgstr ""
+
+#. module: migration_diagnostic
+#: code:addons/migration_diagnostic/models/migration_diagnostic.py:0
+#, python-format
+msgid "🚨 Complexity CRITICAL"
+msgstr ""

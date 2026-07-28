@@ -28,7 +28,7 @@
             <tree decoration-warning="volume_level == 'high'"
                   decoration-danger="volume_level == 'critical'">
                 <field name="phase"/>
-                <field name="migration_priority" string="Ordre"/>
+                <field name="migration_priority" string="Order"/>
                 <field name="label"/>
                 <field name="model_name"/>
                 <field name="record_count" sum="Total"/>
@@ -61,17 +61,17 @@
         <field name="name">migration.diagnostic.form</field>
         <field name="model">migration.diagnostic</field>
         <field name="arch" type="xml">
-            <form string="Diagnostic de migration">
+            <form string="Migration diagnostic">
                 <header>
                     <button name="action_run_scan" type="object"
-                            string="🔍 Relancer le scan"
+                            string="🔍 Re-run scan"
                             class="btn-primary"
                             attrs="{'invisible': [('state', '=', 'scanning')]}"/>
                     <button name="action_reset_draft" type="object"
-                            string="Réinitialiser"
+                            string="Reset"
                             attrs="{'invisible': [('state', '=', 'draft')]}"/>
                     <button name="action_open_report" type="object"
-                            string="📄 Exporter PDF"
+                            string="📄 Export PDF"
                             attrs="{'invisible': [('state', '!=', 'done')]}"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,scanning,done"/>
@@ -79,7 +79,7 @@
 
                 <sheet>
                     <div class="alert alert-danger" role="alert" attrs="{'invisible': [('state', '!=', 'error')]}">
-                        <b>Erreur lors du scan :</b>
+                        <b>Scan error:</b>
                         <field name="error_message" readonly="1"/>
                     </div>
 
@@ -89,33 +89,33 @@
                                decoration-warning="complexity_level == 'medium'"
                                decoration-danger="complexity_level in ('high', 'critical')"/>
                         <span class="ml-3 font-weight-bold" style="font-size:1.25rem;">
-                            Score : <field name="complexity_score" readonly="1"/> / 100
+                            Score: <field name="complexity_score" readonly="1"/> / 100
                         </span>
                         <span class="ml-4 text-muted">
-                            Estimation : <field name="estimated_days_label" readonly="1"/>
+                            Estimate: <field name="estimated_days_label" readonly="1"/>
                         </span>
                     </div>
 
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Nom du diagnostic"/></h1>
+                        <h1><field name="name" placeholder="Diagnostic name"/></h1>
                     </div>
 
                     <group>
-                        <group string="Informations">
+                        <group string="Information">
                             <field name="source_version"/>
                             <field name="scan_date"/>
-                            <field name="scan_duration" string="Durée (s)"/>
+                            <field name="scan_duration" string="Duration (s)"/>
                             <field name="company_count"/>
                             <field name="has_multicompany" widget="boolean_toggle"/>
                         </group>
-                        <group string="Personnalisations">
+                        <group string="Customizations">
                             <field name="custom_field_count"/>
                             <field name="server_action_python_count"/>
                             <field name="automation_rule_count"/>
                         </group>
                     </group>
 
-                    <group string="Inventaire des modules">
+                    <group string="Module inventory">
                         <group>
                             <field name="module_count_total"/>
                             <field name="module_count_standard"/>
@@ -126,30 +126,30 @@
                         </group>
                     </group>
 
-                    <group string="Données">
-                        <field name="total_records" string="Total enregistrements estimés"/>
+                    <group string="Data">
+                        <field name="total_records" string="Total estimated records"/>
                     </group>
 
                     <notebook>
-                        <page string="📋 Recommandations" attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <page string="📋 Recommendations" attrs="{'invisible': [('state', '!=', 'done')]}">
                             <field name="recommendation" widget="html" nolabel="1" readonly="1"/>
-                            <separator string="Phase 1 — Socle référentiel"/>
+                            <separator string="Phase 1 — Reference data"/>
                             <field name="phase1_notes" widget="html" nolabel="1" readonly="1"/>
-                            <separator string="Phase 2 — Données métier"/>
+                            <separator string="Phase 2 — Business data"/>
                             <field name="phase2_notes" widget="html" nolabel="1" readonly="1"/>
                         </page>
 
-                        <page string="⚠️ Facteurs de risque">
+                        <page string="⚠️ Risk factors">
                             <field name="risk_line_ids" readonly="1"
                                    context="{'tree_view_ref': 'migration_diagnostic.view_migration_risk_list_embedded'}"/>
                         </page>
 
-                        <page string="📊 Volumes de données">
+                        <page string="📊 Data volumes">
                             <field name="volume_line_ids" readonly="1"
                                    context="{'tree_view_ref': 'migration_diagnostic.view_migration_volume_list_embedded'}"/>
                         </page>
 
-                        <page string="📦 Modules installés">
+                        <page string="📦 Installed modules">
                             <field name="module_line_ids" readonly="1"
                                    context="{'tree_view_ref': 'migration_diagnostic.view_migration_module_list_embedded'}"/>
                         </page>
@@ -179,7 +179,7 @@
                 <field name="scan_date"/>
                 <field name="complexity_level" widget="badge"/>
                 <field name="complexity_score"/>
-                <field name="estimated_days_label" string="Estimation"/>
+                <field name="estimated_days_label" string="Estimate"/>
                 <field name="module_count_total"/>
                 <field name="module_count_custom"/>
                 <field name="total_records"/>
@@ -192,12 +192,12 @@
          ACTION principale
     ════════════════════════════════════════════════════════════════════════ -->
     <record id="action_migration_diagnostic" model="ir.actions.act_window">
-        <field name="name">Diagnostics de migration</field>
+        <field name="name">Migration diagnostics</field>
         <field name="res_model">migration.diagnostic</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Lancer votre premier diagnostic</p>
-            <p>Scannez votre base Odoo pour obtenir un rapport de faisabilité de migration.</p>
+            <p class="o_view_nocontent_smiling_face">Run your first diagnostic</p>
+            <p>Scan your Odoo database to get a migration feasibility report.</p>
         </field>
     </record>
 
