@@ -377,7 +377,7 @@ class MigrationDiagnostic(models.Model):
             ))
 
         # ── Règles d'automatisation ────────────────────────────────────────────
-        # En v17, le modèle est toujours base.automation
+        # En v16, le modèle est toujours base.automation
         try:
             automation_model = 'base.automation'
             if automation_model in self.env:
